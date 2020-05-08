@@ -1,0 +1,32 @@
+.App {
+  font-family: sans-serif;
+}
+
+.form-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 2rem;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 20rem;
+}
+
+.button {
+  height: 100%;
+}
+.todos {
+  width: 22rem;
+  margin-left: 1rem;
+}
+.no-todo {
+  margin-left: 1rem;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: darkmagenta;
+}
