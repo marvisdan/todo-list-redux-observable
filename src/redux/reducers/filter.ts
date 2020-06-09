@@ -1,7 +1,6 @@
-import { ITodoItem } from "../../models";
-import { todoActionType } from "../actions";
 import { produce } from "immer";
 import { set } from "lodash";
+
 import { filterConstant } from "../../constants";
 import { filterActionType } from "../actions/filter";
 import { ActionType } from "typesafe-actions";
@@ -15,17 +14,17 @@ export interface IFilterState {
   visibilityFilter: string;
 }
 
-const initialTodoState: IFilterState = {
+export const initialFilterState: IFilterState = {
   visibilityFilter: filterConstant.SHOW_ALL
 };
 
-export const reduceFilteredTodos = (state: IFilterState, payload) =>
+export const reduceFilteredTodos = (state: IFilterState, payload: string) =>
   produce(state, draft => {
     set(draft, "visibilityFilter", payload);
   });
 
 const filterTodosReducer = (
-  state: IFilterState = initialTodoState,
+  state: IFilterState = initialFilterState,
   action: FilterAction
 ) => {
   //console.log("action", action, state);

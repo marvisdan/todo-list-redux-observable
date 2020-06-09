@@ -3,10 +3,12 @@ import { ITodoItem } from "../../models";
 export enum todoActionType {
   ADD_TODO = "ADD_TODO",
   ADD_TODO_SUCCESS = "ADD_TODO_SUCCESS",
+  ADD_TODO_FAILED = "ADD_TODO_FAILED",
   COMPLETED_TODO = "COMPLETED_TODO",
   DISPLAY_EDIT_FIELD = "DISPLAY_EDIT_FIELD",
   EDIT_TODO = "EDIT_TODO",
   EDIT_TODO_SUCCESS = "EDIT_TODO_SUCCESS",
+  EDIT_TODO_FAILED = 'EDIT_TODO_FAILED',
   COMPLETED_TODO_SUCCESS = "COMPLETED_TODO_SUCCESS",
   REMOVE_TODO = "REMOVE_TODO",
   REMOVE_TODO_SUCCESS = "REMOVE_TODO_SUCCESS",
@@ -17,6 +19,7 @@ export enum todoActionType {
   CREATE_TODO_IN_LOCAL_STORAGE = "CREATE_TODO_IN_LOCAL_STORAGE",
   UPDATE_TODO_IN_LOCAL_STORAGE = "UPDATE_TODO_IN_LOCAL_STORAGE",
   REMOVE_TODO_IN_LOCAL_STORAGE = "REMOVE_TODO_IN_LOCAL_STORAGE"
+
 }
 
 export const loadTodos = () => {
@@ -31,7 +34,7 @@ export const loadingTodos = () => {
   };
 };
 
-export const loadedTodos = todos => {
+export const loadedTodos = (todos: ITodoItem[]) => {
   return {
     type: todoActionType.LOADED_TODOS,
     payload: todos
@@ -56,6 +59,12 @@ export const addTodo = (newTodo: ITodoItem) => ({
 export const addTodoSuccess = () => {
   return {
     type: todoActionType.ADD_TODO_SUCCESS
+  };
+};
+
+export const addTodoFailed = () => {
+  return {
+    type: todoActionType.ADD_TODO_FAILED
   };
 };
 
@@ -106,5 +115,11 @@ export const editTodo = (newTodo: ITodoItem) => {
 export const editTodoSuccess = () => {
   return {
     type: todoActionType.EDIT_TODO_SUCCESS
+  };
+};
+
+export const editTodoFailed = () => {
+  return {
+    type: todoActionType.EDIT_TODO_FAILED
   };
 };

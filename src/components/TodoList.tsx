@@ -15,7 +15,7 @@ import { ITodoItem } from "../models";
 const TodoList: React.FC = () => {
   const todos = useSelector(todosSelector);
   const filter = useSelector(visibilityFilterTodosSelector);
-  const filteredTodos = useSelector(filteredTodosSelector({ getVisibleTodos }));
+  const filteredTodos = useSelector(filteredTodosSelector(getVisibleTodos));
 
   if (!filteredTodos || filteredTodos.length < 1) {
     return <p className="no-todo">"There is no todo"</p>;

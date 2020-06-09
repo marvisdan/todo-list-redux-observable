@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
-
-export const todosState = state => state.todos;
-export const filterState = state => state.filter;
+import { IState } from '../../models'
+export const todosState = (state: IState) => state.todos;
+export const filterState = (state: IState) => state.filter;
 
 export const todosSelector = createSelector(
   todosState,
@@ -13,7 +13,7 @@ export const visibilityFilterTodosSelector = createSelector(
   filterReducer => filterReducer && filterReducer.visibilityFilter
 );
 
-export const filteredTodosSelector = ({ getVisibleTodos }) =>
+export const filteredTodosSelector = (getVisibleTodos: any) =>
   createSelector(
     todosSelector,
     visibilityFilterTodosSelector,
@@ -45,6 +45,6 @@ export const findEditedFieldSelector = createSelector(
   editFieldIdSelector,
   (todos, id) => {
     const findEditField = todos && todos.find(todo => todo.id === id);
-    return findEditField ? findEditField.value : findEditField;
+    return findEditField ? findEditField.value : id;
   }
 );

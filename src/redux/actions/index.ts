@@ -12,7 +12,9 @@ import {
   addTodoSuccess,
   completedTodo,
   completedTodoSuccess,
-  displayEditField
+  displayEditField,
+  addTodoFailed,
+  editTodoFailed,
 } from "./todos";
 import { visibiltyFilter } from "./filter";
 
@@ -31,5 +33,7 @@ export {
   completedTodo,
   completedTodoSuccess,
   displayEditField,
-  visibiltyFilter
+  visibiltyFilter,
+  addTodoFailed,
+  editTodoFailed
 };

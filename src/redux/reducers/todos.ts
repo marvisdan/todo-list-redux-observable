@@ -4,7 +4,7 @@ import { produce } from "immer";
 import { set } from "lodash";
 
 export interface TodosAction {
-  type: any;
+  type?: any;
   payload?: any;
 }
 
@@ -17,24 +17,30 @@ export interface Action {
 export interface ITodoState {
   todos: ITodoItem[];
   editField: string;
+  lastUpdatedTodo: string,
 }
 
-const initialTodoState: ITodoState = {
+export const initialTodoState: ITodoState = {
   todos: [],
-  editField: ""
+  editField: "",
+  lastUpdatedTodo: '',
 };
 
 const reduceAddTodo = (state: ITodoState, payload: ITodoItem) => {
   if (!payload) {
     return state;
   }
+  const newTodos = state.todos.length < 1 ? [payload] : [...state.todos, payload]
+  const payloadId = payload.id;
+
   return produce(state, draft => {
-    const newTodos = [...draft.todos, payload];
+
     set(draft, "todos", newTodos);
+    set(draft, "lastUpdatedTodo", payloadId);
   });
 };
 
-const reduceDisplayEditField = (state: ITodoState, payload) =>
+const reduceDisplayEditField = (state: ITodoState, payload: string) =>
   produce(state, draft => {
     set(draft, "editField", payload);
   });
@@ -54,7 +60,6 @@ const reduceEditTodo = (state: ITodoState, payload: ITodoItem) => {
     set(draft, "editField", "");
   });
 };
-
 const reduceRemoveTodo = (state: ITodoState, payload: string) => {
   if (!payload) {
     return state;
@@ -62,6 +67,7 @@ const reduceRemoveTodo = (state: ITodoState, payload: string) => {
   return produce(state, draft => {
     const newTodos = state.todos.filter(todo => todo.id !== payload);
     set(draft, "todos", newTodos);
+    set(draft, "lastUpdatedTodo", payload);
   });
 };
 
@@ -87,8 +93,8 @@ const reduceCompletedTodo = (state: ITodoState, payload: string) => {
 
 export const reduceLoadedTodos = (state: ITodoState, payload: ITodoItem[]) =>
   produce(state, draft => {
+
     set(draft, "todos", payload);
-    set(draft, "filteredTodoList", payload);
   });
 
 const todosReducer = (

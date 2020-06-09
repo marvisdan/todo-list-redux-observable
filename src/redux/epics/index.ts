@@ -1,28 +1,41 @@
 import {
   todoActionType,
   addTodoSuccess,
+  addTodoFailed,
   completedTodoSuccess,
   removeTodoSuccess,
   editTodoSuccess,
   loadingTodos,
   loadedTodos,
-  loadingTodosFailed
+  loadingTodosFailed,
+  editTodoFailed
 } from "../actions";
 
-import { combineEpics, Epic } from "redux-observable";
+import { combineEpics, Epic, ofType } from "redux-observable";
 import { isOfType } from "typesafe-actions";
 import { of, from } from "rxjs";
-import { ITodoState, TodosAction } from "../reducers";
-import { map, startWith, catchError, filter, switchMap } from "rxjs/operators";
-import { getTodos } from "../../api";
+import { TodosAction, ITodoState } from "../reducers/todos";
 
-export const addTodoEpic = (action$, state$) =>
-  action$.pipe(
-    filter(isOfType(todoActionType.ADD_TODO)),
-    map(() => addTodoSuccess())
-  );
+import { map, startWith, catchError, filter, switchMap, mergeMap, withLatestFrom } from "rxjs/operators";
+import { getTodos, createTodoInStorage, removeTodoInStorage, updateTodoInStorage } from "../../api";
+import { ITodoItem } from "../../models";
 
-export const completedTodoEpic: Epic<TodosAction, TodosAction, ITodoState> = (
+export const addTodoEpic: Epic<any, TodosAction, ITodoState> = (action$: any, state$: any) =>
+  action$
+    .pipe(
+      ofType(todoActionType.ADD_TODO),
+      withLatestFrom(state$),
+      mergeMap(([, state$]) => {
+        const todosState = state$.todos
+        const addedValue = todosState.todos.find(({ id }: ITodoItem) => id === todosState.lastUpdatedTodo);
+        return from(createTodoInStorage(addedValue))
+          .pipe(map(
+            () => addTodoSuccess()),
+            catchError(() => of(addTodoFailed()))
+          )
+      }));
+
+export const completedTodoEpic: Epic<any, TodosAction, ITodoState> = (
   action$,
   state$
 ) =>
@@ -31,25 +44,50 @@ export const completedTodoEpic: Epic<TodosAction, TodosAction, ITodoState> = (
     map(() => completedTodoSuccess())
   );
 
-export const removeTodoEpic: Epic<TodosAction, TodosAction, ITodoState> = (
-  action$,
-  state$
+export const removeTodoEpic: Epic<any, TodosAction, ITodoState> = (
+  action$: any,
+  state$: any,
 ) =>
   action$.pipe(
-    filter(isOfType(todoActionType.REMOVE_TODO)),
-    map(() => removeTodoSuccess())
-  );
+    ofType(todoActionType.REMOVE_TODO),
+    withLatestFrom(state$),
+    mergeMap(([, state$]) => {
+      const todosState = state$.todos;
+      const removedValue = todosState.find(({ id }: ITodoItem) => id === todosState.lastUpdatedTodo);
+      if (!removedValue) {
+        return state$;
+      }
+      return from(removeTodoInStorage(removedValue))
+        .pipe(
+          map(() => removeTodoSuccess()),
+          catchError(() => of(loadingTodosFailed()))
+        )
+    }))
 
-export const editTodoEpic: Epic<TodosAction, TodosAction, ITodoState> = (
-  action$,
-  state$
+export const editTodoEpic: Epic<any, TodosAction, ITodoState> = (
+  action$: any,
+  state$: any
 ) =>
   action$.pipe(
-    filter(isOfType(todoActionType.EDIT_TODO)),
-    map(() => editTodoSuccess())
+    ofType(todoActionType.EDIT_TODO),
+    withLatestFrom(state$),
+    mergeMap(([, state$]) => {
+      const todosState = state$.todos;
+      const editedValue = todosState.todos.find(({ id }: ITodoItem) => id === todosState.lastUpdatedTodo);
+      if (!editedValue) {
+        return state$;
+      }
+      const editedTodos = todosState.find(({ id }: ITodoItem) => id === editedValue);
+      return from(
+        updateTodoInStorage(editedTodos))
+        .pipe(
+          map(() => editTodoSuccess()),
+          catchError(() => of(editTodoFailed()))
+        )
+    })
   );
 
-export const loadTodosEpic = (action$, state$) =>
+export const loadTodosEpic: Epic<any, TodosAction, ITodoState> = (action$, state$) =>
   action$.pipe(
     filter(isOfType(todoActionType.LOAD_TODOS)),
     switchMap((action: any) =>

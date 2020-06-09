@@ -1,9 +1,8 @@
-import { v4 as uuidv4 } from "uuid";
 import { getItem, setItem } from "../utils/storage";
 
 export const getTodos = async () => await getItem("todos");
 
-export const getTodo = async (id: string) => {
+export const getTodo = async (id) => {
   const todos = await getItem("todos");
   return todos.find(({ id: todoId }) => id === todoId);
 };
@@ -29,7 +28,7 @@ export const updateTodoInStorage = async ({ id, ...todo }) => {
   return { ...todo, id };
 };
 
-export const removeTodoInStorage = async (id: string) => {
+export const removeTodoInStorage = async (id) => {
   const todos = await getItem("todos");
   const newTodos = todos.filter(({ id: todoId }) => id !== todoId);
 

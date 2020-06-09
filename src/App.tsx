@@ -18,8 +18,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
+      <h1>Reactive Todo</h1>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <TodoFilter />

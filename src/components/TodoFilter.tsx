@@ -15,8 +15,11 @@ const TodoFilter: React.FC = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(visibiltyFilter(event.target.value));
+  const handleChange = (event: React.ChangeEvent<{
+    name?: string | undefined; value: unknown;
+  }>) => {
+    const value: unknown = event.target.value;
+    dispatch(visibiltyFilter(value));
   };
   const handleClose = () => {
     setOpen(false);

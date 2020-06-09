@@ -3,7 +3,6 @@ import { v4 as uuid } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 
 import { addTodo, editTodo } from "../redux/actions";
-import { updateTodoInStorage } from "../api";
 import { findEditedFieldSelector, editTodoSelector } from "../redux";
 
 import TextField from "@material-ui/core/TextField";
@@ -41,7 +40,7 @@ const AddTodo = () => {
     }
 
     let newTodo: ITodoItem = {
-      id: null,
+      id: "",
       value: "",
       completed: false
     };
@@ -53,7 +52,6 @@ const AddTodo = () => {
         value: field.trim()
       };
       dispatch(editTodo(newTodo));
-      updateTodoInStorage(newTodo);
       setField("");
       return;
     }

@@ -1,8 +1,7 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 
+import { useDispatch } from "react-redux";
 import { completedTodo, displayEditField, removeTodo } from "../redux/actions";
-import { removeTodoInStorage } from "../api";
 
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -26,7 +25,6 @@ const Todo = ({ todo }: TodoProps) => {
 
   const remove = (id: string) => () => {
     dispatch(removeTodo(id));
-    removeTodoInStorage(id);
   };
 
   const displayField = (id: string) => () => {
